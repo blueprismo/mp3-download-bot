@@ -90,7 +90,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # https://docs.python-telegram-bot.org/en/v20.6/telegram.bot.html#telegram.Bot.send_audio
 async def youtube(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """This function gets a youtube link, then transforms it to mp3."""
-    music, metadata = youtube_downloader.convert_mp3_buffer(update.message.text)
+    music, metadata = youtube_downloader.convert_mp3_fs(update.message.text)
 
     await context.bot.send_audio(
         chat_id=update.effective_chat.id,

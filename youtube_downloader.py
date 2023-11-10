@@ -11,6 +11,10 @@ mp3_metadata = {
     'Size': 0.0
 }
 
+# Static variables
+DOMAIN = "://download.blueprismo.com"
+PORT = 8080
+
 
 # Extract first audio stream
 def extract_mp3_first_audio_stream(youtube_url) -> Stream | None:
@@ -26,7 +30,7 @@ def extract_mp3_first_audio_stream(youtube_url) -> Stream | None:
     return yt.streams.filter(only_audio=True, adaptive=True).first()
 
 
-# Download the YouTube video
+# Download the YouTube video to buffer (no write anywhere)
 def convert_mp3_buffer(youtube_url) -> tuple[io.BytesIO, mp3_metadata]:
     """
     Gets a youtube video URL, extract it's first audio stream and metadata
@@ -48,6 +52,24 @@ def convert_mp3_buffer(youtube_url) -> tuple[io.BytesIO, mp3_metadata]:
     mp3.stream_to_buffer(buffer)
 
     return buffer.getvalue(), metadata
+
+
+# Download the Youtube video into Filesystem (into NFS or some storage)
+# def convert_mp3_fs(youtube_url) -> (str, mp3_metadata):
+def convert_mp3_fs(youtube_url) -> (str, mp3_metadata):
+    """
+    Gets a youtube video url, extract it's audio stream and metadata,
+    Write the stream into an mp3 file in the current directory,
+    then return the link for the mp3 static file to be downloaded
+    """
+    mp3 = extract_mp3_first_audio_stream(youtube_url)
+    # mp3 = extract_mp3_first_audio_stream("https://youtube.com/WXxV9g7lsFE?si=6XtKMC49ozSErESi")
+    metadata = stream_metadata(mp3)
+
+    # Download the file into FS
+    mp3.download("./", f'{metadata["Title"]}.mp3', max_retries=1)
+
+    return f'{DOMAIN}:{PORT}/{metadata["Title"]}.mp3', metadata
 
 
 # Check for stream metadata
@@ -73,4 +95,4 @@ def stream_metadata(mp3_stream) -> mp3_metadata:
 
 
 if __name__ == "__main__":
-    convert_mp3_buffer()
+    convert_mp3_fs()

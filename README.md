@@ -10,5 +10,5 @@ Sadly, mp3 files from Telegram cannot be downloaded directly to your device for 
 
 
 ## Future TODOS
-- Allow mp3 files being downloaded (set up a server + storage) from a link
+- Allow mp3 files being downloaded (set up a server + storage) from a link served with fastAPI
 - Allow multiple sources (soundcloud? Spotify?)
