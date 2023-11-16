@@ -2,7 +2,7 @@
 import logging
 # Logging
 logging.basicConfig(
-    format="%(asctime)s-%(name)s-%(levelname)s-%(message)s",
+    format="%(asctime)s-%(name)s-%(levelname)s - %(message)s",
     datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.INFO
 )
@@ -96,7 +96,7 @@ async def youtube(update: Update, context: ContextTypes.DEFAULT_TYPE):
     The mp3 is stored in a storagebox
     Then a URL is returned serving that mp3 files
     """
-    logger.info(f'received a URL to convert{update.message.text}')
+    logger.info(f'Received a URL to convert:\n{update.message.text}')
     url = youtube_downloader.convert_mp3_fs(update.message.text)
     logger.info('URL Converted')
     await context.bot.send_message(

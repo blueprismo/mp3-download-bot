@@ -84,13 +84,13 @@ def convert_mp3_fs(youtube_url) -> (str):
     # mp3 = extract_mp3_first_audio_stream("https://youtube.com/WXxV9g7lsFE?si=6XtKMC49ozSErESi")
     metadata = stream_metadata(mp3)
 
-    # Download the file into FS
-    mp3.download("./", f'{metadata["Title"]}.mp3', max_retries=1)
-
     # Sanitize input so we have full valid URLs
-    title = url_friendly(metadata['Title'])
+    mp3_file = f'{url_friendly(metadata["Title"])}.mp3'
 
-    return f"{DOMAIN}:{PORT}/{title}.mp3"
+    # Download the file into FS
+    mp3.download("./", mp3_file, max_retries=1)
+
+    return f"{DOMAIN}:{PORT}/{mp3_file}"
 
 
 # Check for stream metadata
