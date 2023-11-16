@@ -29,4 +29,4 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: eninkaduk/python-telegramp3-bot:latest, eninkaduk/python-telegramp3-bot:{{ steps.vars.outputs.sha_short }}
+        tags: eninkaduk/python-telegramp3-bot:latest, eninkaduk/python-telegramp3-bot:${{ steps.vars.outputs.sha_short }}
