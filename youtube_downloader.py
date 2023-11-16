@@ -1,9 +1,13 @@
 from pytube import YouTube, Stream
 import logging
 import io
+import os
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('pytube').setLevel(logging.INFO)
+
+load_dotenv()
 
 # Define mp3_metadata dictionary
 mp3_metadata = {
@@ -12,8 +16,22 @@ mp3_metadata = {
 }
 
 # Static variables
-DOMAIN = "http://download.blueprismo.com"
+DOMAIN = os.environ['SERVER_URL']
 PORT = 8080
+
+
+def url_friendly(song_title) -> str:
+    """CONVERT the title into a compatible url-friendly string
+    :param song_title: the song title for the stream
+    :type song_title: str
+
+    :returns: The sanitized string for the song title
+    :rtype: str
+    """
+    sanitized_str = song_title.replace(" ", "_")
+    logging.info(f'Song name: {sanitized_str}')
+
+    return sanitized_str
 
 
 # Extract first audio stream
@@ -56,7 +74,7 @@ def convert_mp3_buffer(youtube_url) -> tuple[io.BytesIO, mp3_metadata]:
 
 # Download the Youtube video into Filesystem (into NFS or some storage)
 # def convert_mp3_fs(youtube_url) -> (str, mp3_metadata):
-def convert_mp3_fs(youtube_url) -> (str, mp3_metadata):
+def convert_mp3_fs(youtube_url) -> (str):
     """
     Gets a youtube video url, extract it's audio stream and metadata,
     Write the stream into an mp3 file in the current directory,
@@ -69,7 +87,10 @@ def convert_mp3_fs(youtube_url) -> (str, mp3_metadata):
     # Download the file into FS
     mp3.download("./", f'{metadata["Title"]}.mp3', max_retries=1)
 
-    return f'{DOMAIN}:{PORT}/{metadata["Title"]}.mp3', metadata
+    # Sanitize input so we have full valid URLs
+    title = url_friendly(metadata['Title'])
+
+    return f"{DOMAIN}:{PORT}/{title}.mp3"
 
 
 # Check for stream metadata

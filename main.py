@@ -1,5 +1,11 @@
 #!/usr/bin/env python3.11
 import logging
+# Logging
+logging.basicConfig(
+    format="%(asctime)s-%(name)s-%(levelname)s-%(message)s",
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO
+)
 import youtube_downloader
 import os
 from dotenv import load_dotenv
@@ -9,10 +15,6 @@ from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHan
 # Load_dotenv
 load_dotenv()
 
-# Logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
 logger = logging.getLogger(__name__)
 # avoid all GET and POST requests being logged
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -89,8 +91,27 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Extract the youtube URL functions!
 # https://docs.python-telegram-bot.org/en/v20.6/telegram.bot.html#telegram.Bot.send_audio
 async def youtube(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """This function gets a youtube link, then transforms it to mp3."""
-    music, metadata = youtube_downloader.convert_mp3_fs(update.message.text)
+    """
+    This function gets a youtube link, then transforms it to mp3.
+    The mp3 is stored in a storagebox
+    Then a URL is returned serving that mp3 files
+    """
+    logger.info(f'received a URL to convert{update.message.text}')
+    url = youtube_downloader.convert_mp3_fs(update.message.text)
+    logger.info('URL Converted')
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=f"🎶Here's your mp3 url: {url}"
+    )
+
+
+async def youtube_stream(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    This function gets a youtube link, then transforms it to mp3.
+    The main drawback is that in telegram the audios cannot be downloaded
+    into the phone local storage 😭
+    """
+    music, metadata = youtube_downloader.convert_mp3_buffer(update.message.text)
 
     await context.bot.send_audio(
         chat_id=update.effective_chat.id,
