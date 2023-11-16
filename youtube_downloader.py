@@ -12,7 +12,7 @@ mp3_metadata = {
 }
 
 # Static variables
-DOMAIN = "://download.blueprismo.com"
+DOMAIN = "http://download.blueprismo.com"
 PORT = 8080
 
 
