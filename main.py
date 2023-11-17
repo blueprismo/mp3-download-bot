@@ -145,7 +145,12 @@ if __name__ == '__main__':
     application = ApplicationBuilder().token(os.environ['BOT_TOKEN']).post_init(post_init).build()
 
     # Instantiate the handlers
-    youtube_handler = MessageHandler(filters.TEXT & (filters.Entity("url") | filters.Entity("text_link")) & filters.Regex(r'.*youtube.*'), youtube)
+    youtube_handler = MessageHandler(
+        filters.TEXT &
+        (filters.Entity("url") | filters.Entity("text_link")) &
+        (filters.Regex(r'.*youtube.*') | filters.Regex(r'.*youtu.*')),
+        youtube
+    )
     echo_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), echo)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
