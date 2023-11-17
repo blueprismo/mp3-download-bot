@@ -88,7 +88,7 @@ def convert_mp3_fs(youtube_url) -> (str):
     mp3_file = f'{url_friendly(metadata["Title"])}.mp3'
 
     # Download the file into FS
-    mp3.download("./", mp3_file, max_retries=1)
+    mp3.download("./music_folder", f'{mp3_file}', max_retries=1)
 
     return f"{DOMAIN}:{PORT}/{mp3_file}"
 
