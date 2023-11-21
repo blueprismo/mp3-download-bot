@@ -2,6 +2,7 @@ from pytube import YouTube, Stream
 import logging
 import io
 import os
+import disk_utils
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +19,7 @@ mp3_metadata = {
 # Static variables
 DOMAIN = os.environ['SERVER_URL']
 PORT = 8080
+MUSIC_FOLDER = "./music_folder"
 
 
 def url_friendly(song_title) -> str:
@@ -80,15 +82,18 @@ def convert_mp3_fs(youtube_url) -> (str):
     Write the stream into an mp3 file in the current directory,
     then return the link for the mp3 static file to be downloaded
     """
+    # Check available disk space before proceeding
+    disk_utils.check_available_disk()
+
+    # Get mp3 stream and extract it's metadata
     mp3 = extract_mp3_first_audio_stream(youtube_url)
-    # mp3 = extract_mp3_first_audio_stream("https://youtube.com/WXxV9g7lsFE?si=6XtKMC49ozSErESi")
     metadata = stream_metadata(mp3)
 
     # Sanitize input so we have full valid URLs
     mp3_file = f'{url_friendly(metadata["Title"])}.mp3'
 
     # Download the file into FS
-    mp3.download("./music_folder", f'{mp3_file}', max_retries=1)
+    mp3.download(MUSIC_FOLDER, f'{mp3_file}', max_retries=1)
 
     return f"{DOMAIN}:{PORT}/{mp3_file}"
 
