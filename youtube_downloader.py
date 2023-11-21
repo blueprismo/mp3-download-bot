@@ -28,7 +28,7 @@ def url_friendly(song_title) -> str:
     :returns: The sanitized string for the song title
     :rtype: str
     """
-    sanitized_str = song_title.replace(" ", "_")
+    sanitized_str = song_title.replace(" ", "_").replace('"', "'")
     logging.info(f'Song name: {sanitized_str}')
 
     return sanitized_str
