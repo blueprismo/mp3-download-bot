@@ -23,7 +23,7 @@ def check_available_disk():
 
     # Get free space available:
     free_space_available = (free // (2**30))
-
+    logging.debug(f"Free space available: {free_space_available}")
     # Delete Files if there are less than 30 GB available
     if (free_space_available < 30):
         logging.info("Deleting files to free up space")
@@ -32,10 +32,10 @@ def check_available_disk():
         logging.debug("✅ Space check OK")
 
 
-def delete_old_files(directory_path, num_to_keep=50):
+def delete_old_files(directory_path, num_to_keep=20):
     """
     This function removes the oldest files in the directory,
-    and leaves only a maximum of 50 files remaining
+    and leaves only a maximum of 20 files remaining
 
     :param directory_path: Directory to check the space
     :type directory_path: str
@@ -57,8 +57,9 @@ def delete_old_files(directory_path, num_to_keep=50):
     for file_name in files_to_delete:
         file_path = os.path.join(directory_path, file_name)
         if os.path.isfile(file_path):
+            logging.debug(f'Removing: {file_path}')
             os.remove(file_path)
-            print(f"Deleted: {file_path}")
+            logging.debug(f"Removed: {file_path}")
 
 
 if __name__ == "__main__":
